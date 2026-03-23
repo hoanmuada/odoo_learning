@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="category_development" model="tm.category">
+            <field name="name">Development</field>
+            <field name="code">DEV</field>
+            <field name="sequence">1</field>
+            <field name="color">10</field>
+        </record>
+        <record id="category_meeting" model="tm.category">
+            <field name="name">Meeting</field>
+            <field name="code">MTG</field>
+            <field name="sequence">2</field>
+            <field name="color">4</field>
+        </record>
+        <record id="category_training" model="tm.category">
+            <field name="name">Training</field>
+            <field name="code">TRN</field>
+            <field name="sequence">3</field>
+            <field name="color">2</field>
+        </record>
+        <record id="category_admin" model="tm.category">
+            <field name="name">Administrative</field>
+            <field name="code">ADM</field>
+            <field name="sequence">4</field>
+            <field name="color">5</field>
+        </record>
+        <record id="category_research" model="tm.category">
+            <field name="name">Research</field>
+            <field name="code">RES</field>
+            <field name="sequence">5</field>
+            <field name="color">8</field>
+        </record>
+        <record id="category_code_review" model="tm.category">
+            <field name="name">Code Review</field>
+            <field name="code">CR</field>
+            <field name="sequence">6</field>
+            <field name="color">6</field>
+        </record>
+        <record id="category_testing" model="tm.category">
+            <field name="name">Testing</field>
+            <field name="code">TST</field>
+            <field name="sequence">7</field>
+            <field name="color">1</field>
+        </record>
+    </data>
+</odoo>

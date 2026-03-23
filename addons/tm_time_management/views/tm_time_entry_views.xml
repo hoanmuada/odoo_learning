@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- =================================================================
+         TIME ENTRY VIEWS
+         ================================================================= -->
+
+    <!-- ===== LIST VIEW ===== -->
+    <record id="view_tm_time_entry_tree" model="ir.ui.view">
+        <field name="name">tm.time.entry.tree</field>
+        <field name="model">tm.time.entry</field>
+        <field name="arch" type="xml">
+            <list string="Time Entries"
+                  decoration-info="state == 'draft'"
+                  decoration-warning="state == 'submitted'"
+                  decoration-success="state == 'approved'"
+                  decoration-danger="state == 'rejected'"
+                  multi_edit="1">
+                <field name="date"/>
+                <field name="employee_id" widget="many2one_avatar_employee"/>
+                <field name="name"/>
+                <field name="project_id" optional="show"/>
+                <field name="task_id" optional="show"/>
+                <field name="category_id" widget="badge" optional="show"/>
+                <field name="duration" widget="float_time" sum="Total Duration"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'draft'"
+                       decoration-warning="state == 'submitted'"
+                       decoration-success="state == 'approved'"
+                       decoration-danger="state == 'rejected'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ===== FORM VIEW ===== -->
+    <record id="view_tm_time_entry_form" model="ir.ui.view">
+        <field name="name">tm.time.entry.form</field>
+        <field name="model">tm.time.entry</field>
+        <field name="arch" type="xml">
+            <form string="Time Entry">
+                <header>
+                    <button name="action_submit" type="object"
+                            string="Submit" class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button name="action_approve" type="object"
+                            string="Approve" class="btn-primary"
+                            invisible="state != 'submitted'"
+                            groups="tm_time_management.group_tm_manager"/>
+                    <button name="action_reject" type="object"
+                            string="Reject" class="btn-danger"
+                            invisible="state != 'submitted'"
+                            groups="tm_time_management.group_tm_manager"/>
+                    <button name="action_reset_draft" type="object"
+                            string="Reset to Draft"
+                            invisible="state not in ('submitted', 'rejected')"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,submitted,approved"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group string="General Information">
+                            <field name="name" placeholder="What did you work on?"/>
+                            <field name="employee_id" widget="many2one_avatar_employee"/>
+                            <field name="date"/>
+                            <field name="duration" widget="float_time"/>
+                        </group>
+                        <group string="Classification">
+                            <field name="project_id"/>
+                            <field name="task_id"/>
+                            <field name="category_id" widget="badge"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Notes" name="notes">
+                            <field name="description" placeholder="Add detailed notes here..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ===== PIVOT VIEW ===== -->
+    <record id="view_tm_time_entry_pivot" model="ir.ui.view">
+        <field name="name">tm.time.entry.pivot</field>
+        <field name="model">tm.time.entry</field>
+        <field name="arch" type="xml">
+            <pivot string="Time Analysis" sample="1">
+                <field name="employee_id" type="row"/>
+                <field name="date" interval="month" type="col"/>
+                <field name="duration" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- ===== GRAPH VIEW ===== -->
+    <record id="view_tm_time_entry_graph" model="ir.ui.view">
+        <field name="name">tm.time.entry.graph</field>
+        <field name="model">tm.time.entry</field>
+        <field name="arch" type="xml">
+            <graph string="Time Analysis" type="bar" sample="1">
+                <field name="project_id"/>
+                <field name="duration" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- ===== SEARCH VIEW ===== -->
+    <record id="view_tm_time_entry_search" model="ir.ui.view">
+        <field name="name">tm.time.entry.search</field>
+        <field name="model">tm.time.entry</field>
+        <field name="arch" type="xml">
+            <search string="Search Time Entries">
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="project_id"/>
+                <field name="task_id"/>
+                <field name="category_id"/>
+                <separator/>
+                <filter name="my_entries" string="My Entries"
+                        domain="[('user_id', '=', uid)]"/>
+                <separator/>
+                <filter name="filter_draft" string="Draft"
+                        domain="[('state', '=', 'draft')]"/>
+                <filter name="filter_submitted" string="Submitted"
+                        domain="[('state', '=', 'submitted')]"/>
+                <filter name="filter_approved" string="Approved"
+                        domain="[('state', '=', 'approved')]"/>
+                <filter name="filter_rejected" string="Rejected"
+                        domain="[('state', '=', 'rejected')]"/>
+                <separator/>
+                <filter name="filter_this_week" string="This Week"
+                        domain="[('date', '&gt;=', (context_today() - datetime.timedelta(days=context_today().weekday())).strftime('%%Y-%%m-%%d'))]"/>
+                <filter name="filter_this_month" string="This Month"
+                        domain="[('date', '&gt;=', time.strftime('%%Y-%%m-01'))]"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter name="groupby_employee" string="Employee"
+                            context="{'group_by': 'employee_id'}"/>
+                    <filter name="groupby_project" string="Project"
+                            context="{'group_by': 'project_id'}"/>
+                    <filter name="groupby_category" string="Category"
+                            context="{'group_by': 'category_id'}"/>
+                    <filter name="groupby_state" string="Status"
+                            context="{'group_by': 'state'}"/>
+                    <filter name="groupby_date" string="Date"
+                            context="{'group_by': 'date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- =================================================================
+         ACTIONS
+         ================================================================= -->
+
+    <!-- My Time Entries -->
+    <record id="action_tm_my_entries" model="ir.actions.act_window">
+        <field name="name">My Time Entries</field>
+        <field name="res_model">tm.time.entry</field>
+        <field name="view_mode">list,form,pivot,graph</field>
+        <field name="domain">[('user_id', '=', uid)]</field>
+        <field name="context">{'default_employee_id': False, 'search_default_my_entries': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Log your first time entry!
+            </p>
+            <p>
+                Track the time you spend on projects and tasks.
+            </p>
+        </field>
+    </record>
+
+    <!-- All Time Entries (Manager) -->
+    <record id="action_tm_all_entries" model="ir.actions.act_window">
+        <field name="name">All Time Entries</field>
+        <field name="res_model">tm.time.entry</field>
+        <field name="view_mode">list,form,pivot,graph</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No time entries found.
+            </p>
+        </field>
+    </record>
+
+    <!-- Entries to Approve (Manager) -->
+    <record id="action_tm_entries_to_approve" model="ir.actions.act_window">
+        <field name="name">To Approve</field>
+        <field name="res_model">tm.time.entry</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('state', '=', 'submitted')]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No entries pending approval.
+            </p>
+        </field>
+    </record>
+
+    <!-- Reporting: By Employee -->
+    <record id="action_tm_report_by_employee" model="ir.actions.act_window">
+        <field name="name">Time by Employee</field>
+        <field name="res_model">tm.time.entry</field>
+        <field name="view_mode">pivot,graph,list</field>
+        <field name="context">{'search_default_groupby_employee': 1, 'search_default_filter_approved': 1}</field>
+    </record>
+
+    <!-- Reporting: By Project -->
+    <record id="action_tm_report_by_project" model="ir.actions.act_window">
+        <field name="name">Time by Project</field>
+        <field name="res_model">tm.time.entry</field>
+        <field name="view_mode">pivot,graph,list</field>
+        <field name="context">{'search_default_groupby_project': 1, 'search_default_filter_approved': 1}</field>
+    </record>
+
+</odoo>

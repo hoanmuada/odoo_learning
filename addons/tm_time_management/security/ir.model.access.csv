@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_tm_time_entry_user,tm.time.entry.user,model_tm_time_entry,tm_time_management.group_tm_user,1,1,1,0
+access_tm_time_entry_manager,tm.time.entry.manager,model_tm_time_entry,tm_time_management.group_tm_manager,1,1,1,1
+access_tm_category_user,tm.category.user,model_tm_category,tm_time_management.group_tm_user,1,0,0,0
+access_tm_category_manager,tm.category.manager,model_tm_category,tm_time_management.group_tm_manager,1,1,1,1

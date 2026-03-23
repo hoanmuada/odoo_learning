@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- ===== ROOT MENU ===== -->
+    <menuitem id="menu_tm_root"
+              name="Time Management"
+              sequence="80"
+              groups="tm_time_management.group_tm_user"
+              web_icon="tm_time_management,static/description/icon.png"/>
+
+    <!-- ===== MY TIME ENTRIES (direct child of root, for Users) ===== -->
+    <menuitem id="menu_tm_my_entries"
+              name="My Time Entries"
+              parent="menu_tm_root"
+              action="action_tm_my_entries"
+              sequence="1"/>
+
+    <!-- ===== MANAGEMENT SECTION (for Managers) ===== -->
+    <menuitem id="menu_tm_management"
+              name="Management"
+              parent="menu_tm_root"
+              groups="tm_time_management.group_tm_manager"
+              sequence="10">
+        <menuitem id="menu_tm_all_entries"
+                  name="All Time Entries"
+                  action="action_tm_all_entries"
+                  sequence="1"/>
+        <menuitem id="menu_tm_to_approve"
+                  name="To Approve"
+                  action="action_tm_entries_to_approve"
+                  sequence="2"/>
+    </menuitem>
+
+    <!-- ===== REPORTING SECTION (for Managers) ===== -->
+    <menuitem id="menu_tm_reporting"
+              name="Reporting"
+              parent="menu_tm_root"
+              groups="tm_time_management.group_tm_manager"
+              sequence="20">
+        <menuitem id="menu_tm_report_by_employee"
+                  name="By Employee"
+                  action="action_tm_report_by_employee"
+                  sequence="1"/>
+        <menuitem id="menu_tm_report_by_project"
+                  name="By Project"
+                  action="action_tm_report_by_project"
+                  sequence="2"/>
+    </menuitem>
+
+    <!-- ===== CONFIGURATION SECTION (for Admins) ===== -->
+    <menuitem id="menu_tm_configuration"
+              name="Configuration"
+              parent="menu_tm_root"
+              groups="tm_time_management.group_tm_admin"
+              sequence="99">
+        <menuitem id="menu_tm_categories"
+                  name="Categories"
+                  action="action_tm_category"
+                  sequence="1"/>
+    </menuitem>
+
+</odoo>
